@@ -10,5 +10,5 @@ public class Topic {
     public ArrayList<String> videos;
     public ArrayList<String> testsId;
     public int grade;
-    public int subject;
+    public String subject;
 }
