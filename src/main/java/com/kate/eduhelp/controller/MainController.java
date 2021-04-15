@@ -2,10 +2,9 @@ package com.kate.eduhelp.controller;
 
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.*;
 import com.kate.eduhelp.init.FirebaseInitialize;
+import com.kate.eduhelp.models.Test;
 import com.kate.eduhelp.models.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,5 +43,22 @@ public class MainController {
         cr.document(String.valueOf(topic.id)).set(topic);
 
         return topic.id;
+    }
+
+    @GetMapping("/getTestsByTopicId")
+    @ResponseBody
+    public List<Test> getTestsByTopicId(@RequestParam(name = "id") String id) throws ExecutionException, InterruptedException{
+
+        Query q = firebaseInstance.getFirestore().collection("tests").whereEqualTo("topic",id);
+
+        ApiFuture<QuerySnapshot> qq =  q.get();
+
+        List<Test> list = new ArrayList<>();
+
+        for (QueryDocumentSnapshot doc : qq.get().getDocuments()) {
+            list.add(doc.toObject(Test.class));
+        }
+
+        return list;
     }
 }
