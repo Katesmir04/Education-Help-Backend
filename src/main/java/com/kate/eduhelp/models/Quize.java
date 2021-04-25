@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 public class Quize {
     public String id;
-    public int grade;
-    public String subject;
-    public String title;
+    public String topicId;
     public ArrayList<String> tests;
 }
