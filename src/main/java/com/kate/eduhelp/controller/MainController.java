@@ -7,6 +7,7 @@ import com.kate.eduhelp.init.FirebaseInitialize;
 import com.kate.eduhelp.models.Quize;
 import com.kate.eduhelp.models.Test;
 import com.kate.eduhelp.models.Topic;
+import com.kate.eduhelp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,4 +79,30 @@ public class MainController {
 
         return list;
     }
+
+    @PostMapping("/pushNewUser")
+    public void pushNewUser(@RequestBody User user) throws ExecutionException, InterruptedException {
+
+        System.out.println("got " + user);
+
+        CollectionReference cr = firebaseInstance.getFirestore().collection("users");
+
+        cr.document(user.id).set(user);
+
+    }
+
+    @GetMapping("/addBonusesToUser")
+    @ResponseBody
+    public void addBonusesToUser(@RequestParam(name = "id") String id, @RequestParam(name = "number") int number) throws ExecutionException, InterruptedException {
+        CollectionReference cr = firebaseInstance.getFirestore().collection("users");
+
+        DocumentReference dr = firebaseInstance.getFirestore().collection("users").document(id);
+
+        Long oldValue = (Long) dr.get().get().get("totalBonuses");
+
+        dr.update("totalBonuses", oldValue + number);
+
+
+    }
+
 }
