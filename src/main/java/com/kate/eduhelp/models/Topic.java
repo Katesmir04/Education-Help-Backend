@@ -8,7 +8,7 @@ public class Topic {
     public String body;
     public ArrayList<String> images;
     public ArrayList<String> videos;
-    public ArrayList<String> testsId;
+    public ArrayList<String> quizeIds;
     public int grade;
     public String subject;
 }
