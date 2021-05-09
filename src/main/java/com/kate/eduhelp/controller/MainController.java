@@ -105,4 +105,21 @@ public class MainController {
 
     }
 
+    @GetMapping("/getUserInfo")
+    @ResponseBody
+    public User getUserInfo(@RequestParam(name = "id") String id) throws ExecutionException, InterruptedException {
+
+        Query q = firebaseInstance.getFirestore().collection("users").whereEqualTo("id", id);
+
+        ApiFuture<QuerySnapshot> qq = q.get();
+
+        List<User> list = new ArrayList<>();
+
+        for (QueryDocumentSnapshot doc : qq.get().getDocuments()) {
+            list.add(doc.toObject(User.class));
+        }
+
+        return list.get(0);
+    }
+
 }
