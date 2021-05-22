@@ -4,10 +4,7 @@ package com.kate.eduhelp.controller;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.kate.eduhelp.init.FirebaseInitialize;
-import com.kate.eduhelp.models.Quize;
-import com.kate.eduhelp.models.Test;
-import com.kate.eduhelp.models.Topic;
-import com.kate.eduhelp.models.User;
+import com.kate.eduhelp.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -120,6 +117,33 @@ public class MainController {
         }
 
         return list.get(0);
+    }
+
+
+    @PostMapping("/addPassedQuize")
+    public void addPassedQuize(@RequestBody QuizeItem quizeItem) throws ExecutionException, InterruptedException {
+
+        DocumentReference dr = firebaseInstance.getFirestore().collection("users").document(quizeItem.userId);
+
+        dr.collection("passed").document(quizeItem.quize.id).set(quizeItem);
+
+    }
+
+    @GetMapping("/getPassedQuizes")
+    public List<QuizeItem> getPassedQuizes(@RequestParam(name = "id") String id) throws ExecutionException, InterruptedException {
+
+
+        List<QuizeItem> list = new ArrayList<>();
+
+        CollectionReference cr = firebaseInstance.getFirestore().collection("users").document(id).collection("passed");
+
+        ApiFuture<QuerySnapshot> q = cr.get();
+
+        for (DocumentSnapshot doc : q.get().getDocuments()) {
+            list.add(doc.toObject(QuizeItem.class));
+        }
+
+        return list;
     }
 
 }
