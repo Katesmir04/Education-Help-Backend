@@ -146,4 +146,39 @@ public class MainController {
         return list;
     }
 
+    @PostMapping("/addFavorite")
+    public void addFavorite(@RequestBody Topic topic, @RequestParam(name = "id") String id) throws ExecutionException, InterruptedException {
+
+        DocumentReference dr = firebaseInstance.getFirestore().collection("users").document(id);
+
+        dr.collection("favorites").document(topic.id).set(topic);
+
+    }
+
+    @PostMapping("/removeFavorite")
+    public void removeFavorite(@RequestBody Topic topic, @RequestParam(name = "id") String id) throws ExecutionException, InterruptedException {
+
+        DocumentReference dr = firebaseInstance.getFirestore().collection("users").document(id);
+
+        dr.collection("favorites").document(topic.id).delete();
+
+    }
+
+    @GetMapping("/getFavorites")
+    public List<Topic> getFavorites(@RequestParam(name = "id") String id) throws ExecutionException, InterruptedException {
+
+
+        List<Topic> list = new ArrayList<>();
+
+        CollectionReference cr = firebaseInstance.getFirestore().collection("users").document(id).collection("favorites");
+
+        ApiFuture<QuerySnapshot> q = cr.get();
+
+        for (DocumentSnapshot doc : q.get().getDocuments()) {
+            list.add(doc.toObject(Topic.class));
+        }
+
+        return list;
+    }
+
 }
