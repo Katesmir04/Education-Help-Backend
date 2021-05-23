@@ -181,4 +181,21 @@ public class MainController {
         return list;
     }
 
+    @GetMapping("/getAllUsers")
+    public List<User> getAllUsers() throws ExecutionException, InterruptedException {
+
+
+        List<User> list = new ArrayList<>();
+
+        CollectionReference cr = firebaseInstance.getFirestore().collection("users");
+
+        ApiFuture<QuerySnapshot> q = cr.get();
+
+        for (DocumentSnapshot doc : q.get().getDocuments()) {
+            list.add(doc.toObject(User.class));
+        }
+
+        return list;
+    }
+
 }
